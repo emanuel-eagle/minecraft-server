@@ -18,13 +18,12 @@ resource "aws_instance" "minecraft-server" {
   iam_instance_profile = aws_iam_instance_profile.minecraft_profile.name
   instance_type = "t3.micro"
   user_data = file("minecraft-setup.sh")
-  spot_type            = "persistent"
-  instance_interruption_behavior = "stop"  # Stop instead of terminate
-  wait_for_fulfillment = true
   instance_market_options {
     market_type = "spot"
     spot_options {
         max_price = 0.0033 # minimum max price is 0.0032 
+        spot_instance_type = "persistent"
+        instance_interruption_behavior = "stop"
         }
     }
   tags = {
