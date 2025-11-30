@@ -21,7 +21,7 @@ resource "aws_instance" "minecraft-server" {
   instance_market_options {
     market_type = "spot"
     spot_options {
-        max_price = 0.0031
+        max_price = 0.0033 # minimum max price is 0.0032 
         }
     }
   tags = {
