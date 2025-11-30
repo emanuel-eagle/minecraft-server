@@ -93,7 +93,7 @@ After=network.target
 Type=simple
 User=minecraft
 WorkingDirectory=/opt/minecraft/server
-ExecStart=/usr/bin/java -Xmx3G -Xms3G -jar server.jar nogui
+ExecStart=/usr/bin/java -Xmx512M -Xms512M -jar server.jar nogui
 Restart=on-failure
 RestartSec=10
 
