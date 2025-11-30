@@ -1,6 +1,6 @@
 
 resource "aws_ebs_volume" "minecraft_data" {
-  availability_zone = aws_spot_instance_request.minecraft_server.availability_zone
+  availability_zone = aws_instance.minecraft-server.availability_zone
   size              = 20  # GB - adjust based on your needs
   type              = "gp3"
   
