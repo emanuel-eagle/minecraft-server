@@ -3,6 +3,7 @@ resource "aws_instance" "minecraft-server" {
   iam_instance_profile = aws_iam_instance_profile.minecraft_profile.name
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.minecraft-server-sg.id]
+  subnet_id = aws_subnet.minecraft-subnet.id
   user_data = templatefile(var.user_data_script, {
     server_ip = aws_eip.ip.public_ip
     difficulty = var.minecraft_difficulty
