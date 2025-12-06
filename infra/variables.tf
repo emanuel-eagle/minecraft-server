@@ -12,6 +12,12 @@ variable primary_region {
     default     = "us-east-2"
 }
 
+variable "availability_zone" {
+    description = "The availability zone to deploy resources"
+    type        = string
+    default     = "us-east-2b"
+}
+
 ### EC2 VARIABLES ###
 variable "instance_type" {
     description = "Type of EC2 instance to use"

@@ -4,6 +4,7 @@ resource "aws_instance" "minecraft-server" {
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.minecraft-server-sg.id]
   subnet_id = aws_subnet.minecraft-subnet.id
+  availability_zone = var.availability_zone
   user_data = templatefile(var.user_data_script, {
     server_ip = aws_eip.ip.public_ip
     difficulty = var.minecraft_difficulty

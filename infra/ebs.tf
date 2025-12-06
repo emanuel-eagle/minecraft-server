@@ -1,6 +1,6 @@
 
 resource "aws_ebs_volume" "minecraft_data" {
-  availability_zone = aws_instance.minecraft-server.availability_zone
+  availability_zone = var.availability_zone
   size              = var.ebs_volume_size
   type              = var.ebs_volume_type
   
