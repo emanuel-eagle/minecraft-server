@@ -115,9 +115,25 @@ variable joshua_username {
     description = "Minecraft username for Joshua"
     type        = string
 }
+
+variable boner {
+    description = "Minecraft username for Boner"
+    type        = string
+}
+
+variable lord_big_mac {
+    description = "Minecraft username for Lord_Big_Mac"
+    type        = string
+}
+
+variable myself {
+    description = "Minecraft username for Myself"
+    type        = string
+}
+
 ### WHITELIST ###
 variable "minecraft_whitelist" {
     description = "List of Minecraft usernames to add to the server whitelist"
     type        = list(string)
-    default     = [var.joshua_username]
+    default     = [var.joshua_username, var.boner, var.lord_big_mac, var.myself]
 }
