@@ -46,7 +46,7 @@ variable instance_interruption_behavior {
 variable user_data_script {
     description = "Path to the user data script"
     type        = string
-    default     = "minecraft-setup.sh"
+    default     = "minecraft-setup.sh.tpl"
 }
 
 variable server_name {
