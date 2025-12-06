@@ -1,12 +1,12 @@
 
 resource "aws_ebs_volume" "minecraft_data" {
   availability_zone = aws_instance.minecraft-server.availability_zone
-  size              = 20  # GB - adjust based on your needs
-  type              = "gp3"
+  size              = var.ebs_volume_size
+  type              = var.ebs_volume_type
   
   tags = {
-    Name = "Minecraft-World-Data"
-    Project = "Minecraft"
+    Name = var.ebs_volume_name
+    Project = var.project_name
   }
 }
 
