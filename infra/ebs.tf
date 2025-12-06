@@ -17,3 +17,12 @@ resource "aws_volume_attachment" "minecraft_data" {
   instance_id = aws_instance.minecraft-server.id
   skip_destroy = true
 }
+
+resource "aws_ebs_snapshot" "minecraft_data_snapshot" {
+  volume_id = aws_ebs_volume.minecraft_data.id
+  region = var.primary_region
+  tags = {
+    Name = "${var.ebs_volume_name}-snapshot"
+    Project = var.project_name
+  }
+}

@@ -6,6 +6,12 @@ variable project_name {
     default     = "Minecraft"
 }
 
+variable primary_region {
+    description = "The primary AWS region to deploy resources"
+    type        = string
+    default     = "us-east-2"
+}
+
 ### EC2 VARIABLES ###
 variable "instance_type" {
     description = "Type of EC2 instance to use"
