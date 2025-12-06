@@ -111,6 +111,14 @@ else
   echo "Existing Minecraft installation detected - preserving data"
 fi
 
+# Create whitelist.json from template input (if provided)
+if [ -n '${whitelist_json}' ] && [ '${whitelist_json}' != '[]' ]; then
+  echo "Creating whitelist.json from provided usernames..."
+  cat > whitelist.json << 'WHITELIST_EOF'
+${whitelist_json}
+WHITELIST_EOF
+fi
+
 # Set ownership
 chown -R minecraft:minecraft /opt/minecraft
 

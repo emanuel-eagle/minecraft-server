@@ -110,3 +110,14 @@ variable minecraft_simulation_distance {
     type = number
     default = 10
 }
+
+variable joshua_username {
+    description = "Minecraft username for Joshua"
+    type        = string
+}
+### WHITELIST ###
+variable "minecraft_whitelist" {
+    description = "List of Minecraft usernames to add to the server whitelist"
+    type        = list(string)
+    default     = [var.joshua_username]
+}
