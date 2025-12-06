@@ -45,13 +45,3 @@ resource "aws_vpc" "minecraft-vpc" {
     subnet_id      = aws_subnet.minecraft-subnet.id
     route_table_id = aws_route_table.public.id
   }
-
-resource "aws_subnet" "minecraft-subnet" {
-  vpc_id            = aws_vpc.minecraft-vpc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = var.availability_zone
-  tags = { 
-    Name = "minecraft-subnet",
-    Project = var.project_name  
-  }
-}

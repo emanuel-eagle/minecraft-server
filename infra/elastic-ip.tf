@@ -8,5 +8,5 @@ resource "aws_eip" "ip" {
 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.minecraft-server.id
-  allocation_id = aws_eip.ip.id
+  allocation_id = aws_eip.ip.allocation_id
 }

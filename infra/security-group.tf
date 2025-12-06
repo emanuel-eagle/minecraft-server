@@ -21,6 +21,6 @@ resource "aws_security_group" "minecraft-server-sg" {
 
   tags = {
     Name    = "minecraft-server-sg"
-    Project = "Minecraft"
+    Project = var.project_name
   }
 }
