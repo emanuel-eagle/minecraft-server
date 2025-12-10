@@ -5,6 +5,7 @@ resource "aws_instance" "minecraft-server" {
   vpc_security_group_ids = [aws_security_group.minecraft-server-sg.id]
   subnet_id = aws_subnet.minecraft-subnet.id
   associate_public_ip_address = true
+  user_data_replace_on_change = true  
 
   # Ensure network infra (IGW + public route association) exists before instance/EIP association
   depends_on = [
