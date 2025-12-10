@@ -23,7 +23,7 @@ resource "aws_instance" "minecraft-server" {
     simulation_distance = var.minecraft_simulation_distance
     # Build a JSON array of whitelist entries with empty UUIDs so the server can resolve UUIDs
     whitelist_json = jsonencode([for name in compact([var.joshua_username, var.boner, var.lord_big_mac, var.myself]) : { uuid = "", name = name }])
-
+    minecraft_version   = var.minecraft_version  
   })
   instance_market_options {
     market_type = var.market_type

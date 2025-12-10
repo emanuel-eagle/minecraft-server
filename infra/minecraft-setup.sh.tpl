@@ -45,9 +45,32 @@ cd /opt/minecraft/server
 
 # Download server on first run only
 if [ ! -f "server.jar" ]; then
-  wget -q https://piston-data.mojang.com/v1/objects/45810d238246d90e811d896f87b14695b7fb6839/server.jar
+  echo "Downloading Minecraft ${minecraft_version}..."
+  
+  # Get version manifest URL
+  VERSION_URL=$(curl -s https://piston-meta.mojang.com/mc/game/version_manifest_v2.json | \
+    jq -r ".versions[] | select(.id==\"${minecraft_version}\") | .url")
+  
+  if [ -z "$VERSION_URL" ] || [ "$VERSION_URL" = "null" ]; then
+    echo "ERROR: Version ${minecraft_version} not found"
+    exit 1
+  fi
+  
+  # Get server download URL
+  SERVER_URL=$(curl -s $VERSION_URL | jq -r '.downloads.server.url')
+  
+  if [ -z "$SERVER_URL" ] || [ "$SERVER_URL" = "null" ]; then
+    echo "ERROR: Server download URL not found for ${minecraft_version}"
+    exit 1
+  fi
+  
+  # Download
+  wget -q $SERVER_URL -O server.jar
+  echo "Downloaded Minecraft ${minecraft_version}"
+  
   echo "eula=true" > eula.txt
 fi
+
 
 # Always create/update these files
 cat > server.properties << EOF

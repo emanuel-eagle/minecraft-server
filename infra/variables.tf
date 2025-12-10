@@ -81,6 +81,11 @@ variable ebs_volume_name {
 }
 
 ### MINECRAFT VARIABLES ###
+
+variable minecraft_version {
+    type        = string
+    default     = "1.21.11"
+}
 variable minecraft_difficulty {
     type        = string
     default     = "easy"
