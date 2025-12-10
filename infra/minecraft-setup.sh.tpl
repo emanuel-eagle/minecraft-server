@@ -87,7 +87,7 @@ online-mode=true
 motd=Minecraft on AWS
 EOF
 
-echo '${whitelist_json}' > whitelist.json
+printf '%s\n' '${whitelist_json}' > whitelist.json
 
 # Fix ownership
 chown -R minecraft:minecraft /opt/minecraft

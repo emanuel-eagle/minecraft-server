@@ -20,7 +20,6 @@ resource "aws_instance" "minecraft-server" {
     gamemode = var.minecraft_gamemode 
     port = var.minecraft_port_number
     simulation_distance = var.minecraft_simulation_distance
-    # Build a JSON array of whitelist entries with empty UUIDs so the server can resolve UUIDs
     whitelist_json = jsonencode(var.minecraft_whitelist)
     minecraft_version   = var.minecraft_version  
   })
