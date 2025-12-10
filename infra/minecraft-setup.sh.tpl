@@ -75,7 +75,7 @@ fi
 # Always create/update these files
 cat > server.properties << EOF
 server-port=${port}
-server-ip=${server_ip}
+server-ip=
 gamemode=${gamemode}
 difficulty=${difficulty}
 max-players=${max_players}

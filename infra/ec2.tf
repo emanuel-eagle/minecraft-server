@@ -14,7 +14,6 @@ resource "aws_instance" "minecraft-server" {
   ]
   availability_zone = var.availability_zone
   user_data = templatefile(var.user_data_script, {
-    server_ip = aws_eip.ip.public_ip
     difficulty = var.minecraft_difficulty
     max_players = var.minecraft_max_players
     view_distance = var.minecraft_view_distance
