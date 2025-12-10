@@ -10,8 +10,7 @@ resource "aws_instance" "minecraft-server" {
   # Ensure network infra (IGW + public route association) exists before instance/EIP association
   depends_on = [
     aws_internet_gateway.igw,
-    aws_route_table_association.public_assoc,
-    aws_volume_attachment.minecraft_data  
+    aws_route_table_association.public_assoc
   ]
   availability_zone = var.availability_zone
   user_data = templatefile(var.user_data_script, {

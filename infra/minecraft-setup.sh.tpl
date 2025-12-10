@@ -10,7 +10,7 @@ useradd -r -m -U -d /opt/minecraft -s /bin/bash minecraft || true
 
 # Wait for and mount EBS volume
 DEVICE=""
-for i in {1..60}; do
+for i in {1..300}; do
   if [ -e /dev/nvme1n1 ]; then
     DEVICE="/dev/nvme1n1"
     break
