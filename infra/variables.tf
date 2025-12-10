@@ -116,22 +116,7 @@ variable minecraft_simulation_distance {
     default = 10
 }
 
-variable joshua_username {
+variable minecraft_whitelist {
     description = "Minecraft username for Joshua"
-    type        = string
-}
-
-variable boner {
-    description = "Minecraft username for Boner"
-    type        = string
-}
-
-variable lord_big_mac {
-    description = "Minecraft username for Lord_Big_Mac"
-    type        = string
-}
-
-variable myself {
-    description = "Minecraft username for Myself"
     type        = string
 }
