@@ -109,7 +109,7 @@ player-idle-timeout=0
 force-gamemode=false
 rate-limit=0
 hardcore=false
-white-list=false
+white-list=true
 broadcast-console-to-ops=true
 spawn-npcs=true
 spawn-animals=true
@@ -118,17 +118,30 @@ initial-enabled-packs=vanilla
 level-type=minecraft\:normal
 text-filtering-config=
 spawn-monsters=true
-enforce-whitelist=false
+enforce-whitelist=true
 spawn-protection=16
 resource-pack-sha1=
 max-world-size=29999984
 EOF
+
+  # Create whitelist.json from template variable
+  echo "Creating whitelist.json..."
+  cat > whitelist.json << 'WHITELIST_EOF'
+${whitelist_json}
+WHITELIST_EOF
+
+  echo "Whitelist created with provided usernames"
 else
   echo "Existing Minecraft installation detected - preserving data"
+  
+  # Update whitelist.json on restarts to pick up any changes
+  if [ -n "${whitelist_json}" ]; then
+    echo "Updating whitelist.json..."
+    cat > whitelist.json << 'WHITELIST_EOF'
+${whitelist_json}
+WHITELIST_EOF
+  fi
 fi
-
-# Whitelist disabled for testing - skip whitelist.json creation
-echo "Whitelist disabled - server is open to all players"
 
 # Set ownership
 chown -R minecraft:minecraft /opt/minecraft
@@ -160,6 +173,6 @@ systemctl start minecraft.service
 
 echo "Minecraft server setup complete!"
 echo "World data is stored on persistent EBS volume at $DEVICE"
-echo "Server is OPEN - no whitelist enabled (testing mode)"
+echo "Whitelist enabled with configured players"
 echo "Check status with: sudo systemctl status minecraft"
 echo "View logs with: sudo journalctl -u minecraft -f"
