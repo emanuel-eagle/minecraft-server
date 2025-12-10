@@ -11,6 +11,7 @@ resource "aws_instance" "minecraft-server" {
   depends_on = [
     aws_internet_gateway.igw,
     aws_route_table_association.public_assoc
+    aws_volume_attachment.minecraft_data  # Add this!
   ]
   availability_zone = var.availability_zone
   user_data = templatefile(var.user_data_script, {
