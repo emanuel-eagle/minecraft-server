@@ -8,29 +8,45 @@ dnf update -y
 dnf install -y java-21-amazon-corretto-headless
 
 # Create minecraft user
-useradd -r -m -U -d /opt/minecraft -s /bin/bash minecraft
+useradd -r -m -U -d /opt/minecraft -s /bin/bash minecraft || true
 
-# Wait for EBS volume to be attached
+# Wait for EBS volume and detect device name (NVMe or legacy)
+DEVICE=""
 echo "Waiting for EBS volume..."
-while [ ! -e /dev/sdf ]; do
+for i in {1..60}; do
+  if [ -e /dev/nvme1n1 ]; then
+    DEVICE="/dev/nvme1n1"
+    echo "Found EBS volume at $DEVICE (NVMe)"
+    break
+  elif [ -e /dev/sdf ]; then
+    DEVICE="/dev/sdf"
+    echo "Found EBS volume at $DEVICE (legacy)"
+    break
+  fi
   sleep 1
 done
 
+if [ -z "$DEVICE" ]; then
+  echo "ERROR: EBS volume not found after 60 seconds"
+  exit 1
+fi
+
 # Check if volume has a filesystem, create if not
-if ! blkid /dev/sdf; then
-  echo "Creating filesystem on EBS volume..."
-  mkfs -t xfs /dev/sdf
+if ! blkid $DEVICE; then
+  echo "Creating XFS filesystem on EBS volume..."
+  mkfs -t xfs $DEVICE
 fi
 
 # Create mount point
 mkdir -p /opt/minecraft/server
 
 # Mount the volume
-mount /dev/sdf /opt/minecraft/server
+mount $DEVICE /opt/minecraft/server
 
-# Add to fstab for automatic mounting on reboot
-if ! grep -q "/dev/sdf" /etc/fstab; then
-  echo "/dev/sdf /opt/minecraft/server xfs defaults,nofail 0 2" >> /etc/fstab
+# Add to fstab for automatic mounting on reboot (use UUID for reliability)
+VOLUME_UUID=$(blkid -s UUID -o value $DEVICE)
+if ! grep -q "$VOLUME_UUID" /etc/fstab; then
+  echo "UUID=$VOLUME_UUID /opt/minecraft/server xfs defaults,nofail 0 2" >> /etc/fstab
 fi
 
 # Change to server directory
@@ -53,7 +69,7 @@ if [ ! -f "server.jar" ]; then
 enable-jmx-monitoring=false
 rcon.port=${port}
 level-seed=
-gamemode="${gamemode}"
+gamemode=${gamemode}
 enable-command-block=false
 enable-query=false
 generator-settings={}
@@ -64,7 +80,7 @@ query.port=${port}
 pvp=true
 generate-structures=true
 max-chained-neighbor-updates=1000000
-difficulty="${difficulty}"
+difficulty=${difficulty}
 network-compression-threshold=256
 max-tick-time=60000
 require-resource-pack=false
@@ -75,7 +91,7 @@ enable-status=true
 allow-flight=false
 initial-disabled-packs=
 broadcast-rcon-to-ops=true
-view-distance=10
+view-distance=${view_distance}
 server-ip=${server_ip}
 resource-pack-prompt=
 allow-nether=true
@@ -112,17 +128,15 @@ else
 fi
 
 # Create whitelist.json from template input (if provided)
-if [ -n '${whitelist_json}' ] && [ '${whitelist_json}' != '[]' ]; then
+if [ -n "${whitelist_json}" ] && [ "${whitelist_json}" != "[]" ]; then
   echo "Creating whitelist.json from provided usernames..."
-  cat > whitelist.json << 'WHITELIST_EOF'
-${whitelist_json}
-WHITELIST_EOF
+  echo '${whitelist_json}' > whitelist.json
 fi
 
 # Set ownership
 chown -R minecraft:minecraft /opt/minecraft
 
-# Create systemd service
+# Create systemd service (increased memory for better performance)
 cat > /etc/systemd/system/minecraft.service << 'EOF'
 [Unit]
 Description=Minecraft Server
@@ -132,9 +146,11 @@ After=network.target
 Type=simple
 User=minecraft
 WorkingDirectory=/opt/minecraft/server
-ExecStart=/usr/bin/java -Xmx512M -Xmx512M -jar server.jar nogui
+ExecStart=/usr/bin/java -Xms512M -Xmx1024M -jar server.jar nogui
 Restart=on-failure
 RestartSec=10
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
@@ -146,6 +162,6 @@ systemctl enable minecraft.service
 systemctl start minecraft.service
 
 echo "Minecraft server setup complete!"
-echo "World data is stored on persistent EBS volume"
+echo "World data is stored on persistent EBS volume at $DEVICE"
 echo "Check status with: sudo systemctl status minecraft"
 echo "View logs with: sudo journalctl -u minecraft -f"
